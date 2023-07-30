@@ -17,3 +17,15 @@ export type UpdateArtist = {
   name: string;
   grammy: boolean;
 };
+
+export type CreateAlbum = {
+  name: string;
+  year: number;
+  artistId?: string | null;
+};
+
+export type UpdateAlbum = {
+  name: string;
+  year: number;
+  artistId?: string | null;
+};

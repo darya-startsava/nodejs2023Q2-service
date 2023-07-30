@@ -59,7 +59,7 @@ export class ArtistController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  updatePassword(
+  updateArtist(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {

@@ -30,7 +30,7 @@ export class ArtistService {
   }
 
   updateArtist(id: string, updateArtistDto: UpdateArtist) {
-    const index = this.artists.findIndex((user) => user.id === id);
+    const index = this.artists.findIndex((album) => album.id === id);
     if (index === -1) {
       return { index, artist: null, updatedArtist: null };
     }
