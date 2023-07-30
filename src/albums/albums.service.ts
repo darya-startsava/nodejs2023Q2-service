@@ -47,4 +47,12 @@ export class AlbumsService {
     this.albums[index] = updatedAlbum;
     return { index, updatedAlbum };
   }
+
+  updateArtistId(id: string) {
+    this.albums.forEach((album) => {
+      if (album.artistId === id) {
+        album.artistId = null;
+      }
+    });
+  }
 }
