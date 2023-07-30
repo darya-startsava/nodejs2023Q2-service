@@ -36,7 +36,7 @@ export class AlbumService {
   updateAlbum(id: string, updateAlbumDto: UpdateAlbum) {
     const index = this.albums.findIndex((album) => album.id === id);
     if (index === -1) {
-      return { index, artist: null, updatedArtist: null };
+      return { index, updatedAlbum: null };
     }
     const album = this.albums[index];
     const updatedAlbum = {

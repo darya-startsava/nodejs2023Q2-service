@@ -18,12 +18,14 @@ import { CreateArtistDto } from 'src/artist/dtos/createArtistDto';
 import { UpdateArtistDto } from 'src/artist/dtos/updateArtistDto';
 import { ArtistService } from 'src/artist/artist.service';
 import Artist from 'src/types/artist';
+import { TrackService } from 'src/track/track.service';
 
 @Controller('artist')
 export class ArtistController {
   constructor(
     private artistService: ArtistService,
     private albumService: AlbumService,
+    private trackService: TrackService,
   ) {}
 
   @Get()
@@ -60,6 +62,7 @@ export class ArtistController {
       );
     }
     this.albumService.updateArtistId(id);
+    this.trackService.updateArtistId(id);
   }
 
   @Put(':id')

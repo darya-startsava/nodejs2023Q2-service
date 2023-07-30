@@ -29,3 +29,17 @@ export type UpdateAlbum = {
   year: number;
   artistId?: string | null;
 };
+
+export type CreateTrack = {
+  name: string;
+  artistId?: string | null;
+  albumId?: string | null;
+  duration: number;
+};
+
+export type UpdateTrack = {
+  name: string;
+  artistId?: string | null;
+  albumId?: string | null;
+  duration: number;
+};

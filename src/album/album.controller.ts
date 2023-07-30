@@ -13,6 +13,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
+import { TrackService } from 'src/track/track.service';
 import Album from 'src/types/album';
 
 import { AlbumService } from './album.service';
@@ -21,7 +22,10 @@ import { UpdateAlbumDto } from './dtos/updateAlbumDto';
 
 @Controller('album')
 export class AlbumController {
-  constructor(private albumService: AlbumService) {}
+  constructor(
+    private albumService: AlbumService,
+    private trackServise: TrackService,
+  ) {}
 
   @Get()
   getAlbums() {
@@ -56,6 +60,7 @@ export class AlbumController {
         StatusCodes.NOT_FOUND,
       );
     }
+    this.trackServise.updateAlbumId(id);
   }
 
   @Put(':id')
