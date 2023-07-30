@@ -14,10 +14,10 @@ import {
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateUserDto } from 'src/users/dtos/createUser.dto';
+import { CreateUserDto } from 'src/user/dtos/createUser.dto';
 import User from 'src/types/user';
-import { UpdatePasswordDto } from 'src/users/dtos/updatePassword.dto';
-import { UserService } from 'src/users/services/user/user.service';
+import { UpdatePasswordDto } from 'src/user/dtos/updatePassword.dto';
+import { UserService } from 'src/user/user.service';
 
 @Controller('user')
 export class UserController {

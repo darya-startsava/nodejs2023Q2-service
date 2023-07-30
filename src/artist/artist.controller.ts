@@ -13,17 +13,17 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { AlbumsService } from 'src/albums/albums.service';
-import { CreateArtistDto } from 'src/artists/dtos/createArtistDto';
-import { UpdateArtistDto } from 'src/artists/dtos/updateArtistDto';
-import { ArtistService } from 'src/artists/services/artist/artist.service';
+import { AlbumService } from 'src/album/album.service';
+import { CreateArtistDto } from 'src/artist/dtos/createArtistDto';
+import { UpdateArtistDto } from 'src/artist/dtos/updateArtistDto';
+import { ArtistService } from 'src/artist/artist.service';
 import Artist from 'src/types/artist';
 
 @Controller('artist')
 export class ArtistController {
   constructor(
     private artistService: ArtistService,
-    private albumsService: AlbumsService,
+    private albumService: AlbumService,
   ) {}
 
   @Get()
@@ -59,7 +59,7 @@ export class ArtistController {
         StatusCodes.NOT_FOUND,
       );
     }
-    this.albumsService.updateArtistId(id);
+    this.albumService.updateArtistId(id);
   }
 
   @Put(':id')

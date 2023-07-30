@@ -4,7 +4,7 @@ import { CreateAlbum, UpdateAlbum } from 'src/utils/types';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class AlbumsService {
+export class AlbumService {
   albums: Album[] = [];
 
   getAlbums() {
