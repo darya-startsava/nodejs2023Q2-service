@@ -4,12 +4,8 @@ import {
   HttpCode,
   Param,
   Post,
-  Body,
   Delete,
   HttpException,
-  Put,
-  UsePipes,
-  ValidationPipe,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
