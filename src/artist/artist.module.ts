@@ -8,5 +8,6 @@ import { ArtistService } from './artist.service';
   controllers: [ArtistController],
   providers: [ArtistService],
   imports: [AlbumModule, TrackModule],
+  exports: [ArtistService],
 })
 export class ArtistModule {}
