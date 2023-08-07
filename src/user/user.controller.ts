@@ -11,6 +11,8 @@ import {
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 
@@ -29,6 +31,7 @@ import {
 } from '@nestjs/swagger';
 import { UserResponse } from './userResponse';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -36,6 +39,7 @@ export class UserController {
   /**
    * Get all users
    */
+
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({

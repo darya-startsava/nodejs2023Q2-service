@@ -2,17 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import User from 'src/types/user';
 import { CreateUser, UpdatePassword } from 'src/utils/types';
+import { UserResponse } from './userResponse';
 
 @Injectable()
 export class UserService {
   users: User[] = [];
 
   getUsers() {
-    return this.users;
+    return this.users.map((user) => new UserResponse(user));
   }
 
   getUserById(id: string) {
-    return this.users.find((user) => user.id === id);
+    const user = this.users.find((user) => user.id === id);
+    if (user) {
+      return new UserResponse(user);
+    }
+    return null;
   }
 
   createUser(createUserDto: CreateUser) {
