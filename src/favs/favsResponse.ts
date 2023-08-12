@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ArtistResponse } from 'src/artist/artistResponse';
-import { AlbumResponse } from 'src/album/AlbumResponse';
+import { AlbumResponse } from 'src/album/albumResponse';
 import { TrackResponse } from 'src/track/trackResponse';
 
 export class FavoritesResponse {

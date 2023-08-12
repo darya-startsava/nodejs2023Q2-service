@@ -19,7 +19,6 @@ import {
   ApiNoContentResponse,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { AlbumResponse } from 'src/album/AlbumResponse';
 import { FavoritesResponse } from './favsResponse';
 
 @Controller('favs')

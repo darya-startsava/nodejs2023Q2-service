@@ -27,7 +27,7 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
 } from '@nestjs/swagger';
-import { AlbumResponse } from './AlbumResponse';
+import { AlbumResponse } from './albumResponse';
 
 @Controller('album')
 export class AlbumController {

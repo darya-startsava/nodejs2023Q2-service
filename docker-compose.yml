@@ -1,0 +1,39 @@
+services:
+  app:
+    container_name: app
+    build: .
+    restart: always
+    environment:
+      - POSTGRES_PORT=${PORT_DB}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres-db
+    volumes:
+      - ./src:/app/src
+    networks:
+      - custom_network
+
+  postgres-db:
+    container_name: postgres-db
+    build: ./db/
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - ${PORT_DB}:${PORT_DB}
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - custom_network
+volumes:
+  db:
+    driver: local
+
+networks:
+  custom_network:
+    name: custom_network
