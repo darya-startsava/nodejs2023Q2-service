@@ -17,7 +17,6 @@ import {
 import { StatusCodes } from 'http-status-codes';
 
 import { CreateUserDto } from 'src/user/dtos/createUser.dto';
-import User from 'src/types/user';
 import { UpdatePasswordDto } from 'src/user/dtos/updatePassword.dto';
 import { UserService } from 'src/user/user.service';
 import {
@@ -30,6 +29,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { UserResponse } from './userResponse';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
@@ -64,8 +64,8 @@ export class UserController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'User with this id does not exist' })
-  getUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const user = this.userService.getUserById(id);
+  async getUserById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const user = await this.userService.getUserById(id);
     if (!user) {
       throw new HttpException(
         'User with this id does not exist',
@@ -88,7 +88,7 @@ export class UserController {
     description: ' Bad request. Body does not contain required fields',
   })
   @UsePipes(new ValidationPipe())
-  createUser(@Body() createUserDto: CreateUserDto): User {
+  async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
@@ -105,13 +105,18 @@ export class UserController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'User with this id does not exist' })
-  deleteUserById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.userService.deleteUserById(id);
-    if (index === -1) {
-      throw new HttpException(
-        'User with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteUserById(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const user = await this.userService.deleteUserById(id);
+      return user;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'User with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
   }
 
@@ -130,21 +135,26 @@ export class UserController {
   @ApiNotFoundResponse({ description: 'User with this id does not exist' })
   @ApiForbiddenResponse({ description: 'Wrong old password' })
   @UsePipes(new ValidationPipe())
-  updatePassword(
+  async updatePassword(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    const { index, user, updatedUserWithoutPassword } =
-      this.userService.updatePassword(id, updatePasswordDto);
-    if (index === -1) {
-      throw new HttpException(
-        'User with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+    try {
+      const user = await this.userService.updatePassword(id, updatePasswordDto);
+
+      return user;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        const user = await this.userService.getUserById(id);
+        if (!user) {
+          throw new HttpException(
+            'User with this id does not exist',
+            StatusCodes.NOT_FOUND,
+          );
+        }
+        throw new HttpException('Wrong old password', StatusCodes.FORBIDDEN);
+      }
+      throw e;
     }
-    if (user.password !== updatePasswordDto.oldPassword) {
-      throw new HttpException('Wrong old password', StatusCodes.FORBIDDEN);
-    }
-    return updatedUserWithoutPassword;
   }
 }

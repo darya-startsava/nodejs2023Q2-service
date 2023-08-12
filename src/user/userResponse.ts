@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
 export class UserResponse {
@@ -14,7 +15,9 @@ export class UserResponse {
   updatedAt: number;
   @Exclude()
   password: string;
-  constructor(partial: Partial<UserResponse>) {
-    Object.assign(this, partial);
+  constructor(user: User) {
+    Object.assign(this, user);
+    this.createdAt = user.createdAt.valueOf();
+    this.updatedAt = user.updatedAt.valueOf();
   }
 }
