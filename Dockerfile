@@ -12,7 +12,7 @@ RUN npm install ci --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:migrate:prod"]
 EXPOSE 4000
 
 # FROM node:18-alpine
