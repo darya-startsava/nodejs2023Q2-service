@@ -28,6 +28,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { ArtistResponse } from './artistResponse';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('artist')
 export class ArtistController {
@@ -64,8 +65,8 @@ export class ArtistController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Artist with this id does not exist' })
-  getArtistById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const artist = this.artistService.getArtistById(id);
+  async getArtistById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const artist = await this.artistService.getArtistById(id);
     if (!artist) {
       throw new HttpException(
         'Artist with this id does not exist',
@@ -88,7 +89,7 @@ export class ArtistController {
     description: ' Bad request. Body does not contain required fields',
   })
   @UsePipes(new ValidationPipe())
-  createArtist(@Body() createArtistDto: CreateArtistDto): Artist {
+  createArtist(@Body() createArtistDto: CreateArtistDto): Promise<Artist> {
     return this.artistService.createArtist(createArtistDto);
   }
 
@@ -105,16 +106,22 @@ export class ArtistController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Artist with this id does not exist' })
-  deleteArtistById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.artistService.deleteArtistById(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Artist with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteArtistById(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const artist = await this.artistService.deleteArtistById(id);
+      //!TODO
+      //this.albumService.updateArtistId(id);
+      //this.trackService.updateArtistId(id);
+      return artist;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Artist with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
-    this.albumService.updateArtistId(id);
-    this.trackService.updateArtistId(id);
   }
 
   /**
@@ -131,20 +138,21 @@ export class ArtistController {
   })
   @ApiNotFoundResponse({ description: 'Artist with this id does not exist' })
   @UsePipes(new ValidationPipe())
-  updateArtist(
+  async updateArtist(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    const { index, updatedArtist } = this.artistService.updateArtist(
-      id,
-      updateArtistDto,
-    );
-    if (index === -1) {
-      throw new HttpException(
-        'Artist with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+    try {
+      const artist = await this.artistService.updateArtist(id, updateArtistDto);
+      return artist;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Artist with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
-    return updatedArtist;
   }
 }
