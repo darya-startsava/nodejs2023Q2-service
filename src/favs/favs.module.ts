@@ -4,10 +4,11 @@ import { ArtistModule } from 'src/artist/artist.module';
 import { TrackModule } from 'src/track/track.module';
 import { FavsController } from './favs.controller';
 import { FavsService } from './favs.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
   controllers: [FavsController],
-  providers: [FavsService],
+  providers: [FavsService, PrismaService],
   imports: [ArtistModule, AlbumModule, TrackModule],
 })
 export class FavsModule {}

@@ -24,8 +24,8 @@ export class ArtistService {
     return this.prisma.artist.create({ data: createArtistDto });
   }
 
-  deleteArtistById(id: string) {
-    return this.prisma.artist.delete({
+  async deleteArtistById(id: string) {
+    return await this.prisma.artist.delete({
       where: {
         id,
       },

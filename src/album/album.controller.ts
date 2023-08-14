@@ -13,7 +13,6 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { TrackService } from 'src/track/track.service';
 import Album from 'src/types/album';
 
 import { AlbumService } from './album.service';
@@ -32,10 +31,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('album')
 export class AlbumController {
-  constructor(
-    private albumService: AlbumService,
-    private trackService: TrackService,
-  ) {}
+  constructor(private albumService: AlbumService) {}
 
   /**
    * Get all albums

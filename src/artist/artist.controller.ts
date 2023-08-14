@@ -13,12 +13,10 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { AlbumService } from 'src/album/album.service';
 import { CreateArtistDto } from 'src/artist/dtos/createArtistDto.dto';
 import { UpdateArtistDto } from 'src/artist/dtos/updateArtistDto.dto';
 import { ArtistService } from 'src/artist/artist.service';
 import Artist from 'src/types/artist';
-import { TrackService } from 'src/track/track.service';
 import {
   ApiOperation,
   ApiOkResponse,
@@ -32,11 +30,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('artist')
 export class ArtistController {
-  constructor(
-    private artistService: ArtistService,
-    private albumService: AlbumService,
-    private trackService: TrackService,
-  ) {}
+  constructor(private artistService: ArtistService) {}
 
   /**
    * Get all artists
@@ -109,9 +103,6 @@ export class ArtistController {
   async deleteArtistById(@Param('id', new ParseUUIDPipe()) id: string) {
     try {
       const artist = await this.artistService.deleteArtistById(id);
-      //!TODO
-      //this.albumService.updateArtistId(id);
-      //this.trackService.updateArtistId(id);
       return artist;
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError) {

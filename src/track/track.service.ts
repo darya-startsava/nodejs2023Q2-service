@@ -24,8 +24,8 @@ export class TrackService {
     return this.prisma.track.create({ data: createTrackDto });
   }
 
-  deleteTrackById(id: string) {
-    return this.prisma.track.delete({
+  async deleteTrackById(id: string) {
+    return await this.prisma.track.delete({
       where: {
         id,
       },
@@ -40,22 +40,4 @@ export class TrackService {
       data: updateTrackDto,
     });
   }
-
-  // TODO update with db
-  // updateArtistId(id: string) {
-  //   this.tracks.forEach((track) => {
-  //     if (track.artistId === id) {
-  //       track.artistId = null;
-  //     }
-  //   });
-  // }
-
-  // TODO update with db
-  // updateAlbumId(id: string) {
-  //   this.tracks.forEach((track) => {
-  //     if (track.albumId === id) {
-  //       track.albumId = null;
-  //     }
-  //   });
-  // }
 }

@@ -24,8 +24,8 @@ export class AlbumService {
     return this.prisma.album.create({ data: createAlbumDto });
   }
 
-  deleteAlbumById(id: string) {
-    return this.prisma.album.delete({
+  async deleteAlbumById(id: string) {
+    return await this.prisma.album.delete({
       where: {
         id,
       },
@@ -40,13 +40,4 @@ export class AlbumService {
       data: updateAlbumDto,
     });
   }
-
-  // TODO update this method to db
-  // updateArtistId(id: string) {
-  //   this.albums.forEach((album) => {
-  //     if (album.artistId === id) {
-  //       album.artistId = null;
-  //     }
-  //   });
-  // }
 }

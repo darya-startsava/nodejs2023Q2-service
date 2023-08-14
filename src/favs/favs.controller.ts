@@ -20,6 +20,7 @@ import {
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { FavoritesResponse } from './favsResponse';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('favs')
 export class FavsController {
@@ -52,15 +53,19 @@ export class FavsController {
   @ApiUnprocessableEntityResponse({
     description: 'Track with this id does not exist',
   })
-  addTrackToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const result = this.favsService.addTrackToFavs(id);
-    if (result) {
-      return;
+  async addTrackToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const result = await this.favsService.addTrackToFavs(id);
+      return result;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Track with this id does not exist',
+          StatusCodes.UNPROCESSABLE_ENTITY,
+        );
+      }
+      throw e;
     }
-    throw new HttpException(
-      'Track with this id does not exist',
-      StatusCodes.UNPROCESSABLE_ENTITY,
-    );
   }
 
   /**
@@ -76,13 +81,18 @@ export class FavsController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Track with this id does not exist' })
-  deleteTrackFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.favsService.deleteTrackFromFavs(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Track with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteTrackFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const track = await this.favsService.deleteTrackFromFavs(id);
+      return track;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Track with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
   }
 
@@ -100,15 +110,19 @@ export class FavsController {
   @ApiUnprocessableEntityResponse({
     description: 'Album with this id does not exist',
   })
-  addAlbumToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const result = this.favsService.addAlbumToFavs(id);
-    if (result) {
-      return;
+  async addAlbumToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const result = await this.favsService.addAlbumToFavs(id);
+      return result;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Album with this id does not exist',
+          StatusCodes.UNPROCESSABLE_ENTITY,
+        );
+      }
+      throw e;
     }
-    throw new HttpException(
-      'Album with this id does not exist',
-      StatusCodes.UNPROCESSABLE_ENTITY,
-    );
   }
 
   /**
@@ -124,13 +138,18 @@ export class FavsController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Album with this id does not exist' })
-  deleteAlbumFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.favsService.deleteAlbumFromFavs(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Album with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteAlbumFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const album = await this.favsService.deleteAlbumFromFavs(id);
+      return album;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Album with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
   }
 
@@ -148,15 +167,19 @@ export class FavsController {
   @ApiUnprocessableEntityResponse({
     description: 'Artist with this id does not exist',
   })
-  addArtistToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const result = this.favsService.addArtistToFavs(id);
-    if (result) {
-      return;
+  async addArtistToFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const result = await this.favsService.addArtistToFavs(id);
+      return result;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Artist with this id does not exist',
+          StatusCodes.UNPROCESSABLE_ENTITY,
+        );
+      }
+      throw e;
     }
-    throw new HttpException(
-      'Artist with this id does not exist',
-      StatusCodes.UNPROCESSABLE_ENTITY,
-    );
   }
 
   /**
@@ -172,13 +195,18 @@ export class FavsController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Artist with this id does not exist' })
-  deleteArtistFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.favsService.deleteArtistFromFavs(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Artist with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteArtistFromFavs(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const artist = await this.favsService.deleteArtistFromFavs(id);
+      return artist;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Artist with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
   }
 }
