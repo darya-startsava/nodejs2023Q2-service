@@ -1,4 +1,4 @@
-part_2 branch
+## part_2 branch
 
 # Home Library Service
 
@@ -22,6 +22,12 @@ npm install
 ## Creating .env file
 
 Create .env from .env.example
+
+## Vulnerabilities scanning 
+
+```
+npm run docker:scan
+```
 
 ## Running application
 
