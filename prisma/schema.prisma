@@ -24,6 +24,7 @@ model Artist {
   name   String
   grammy Boolean
   Album  Album[]
+  Track  Track[]
 }
 
 model Album {
@@ -32,4 +33,15 @@ model Album {
   year     Int
   artist   Artist? @relation(fields: [artistId], references: [id])
   artistId String?
+  Track    Track[]
+}
+
+model Track {
+  id       String  @id @default(uuid())
+  name     String
+  artist   Artist? @relation(fields: [artistId], references: [id])
+  artistId String?
+  album    Album?  @relation(fields: [albumId], references: [id])
+  albumId  String?
+  duration Int
 }

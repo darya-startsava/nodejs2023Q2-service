@@ -26,6 +26,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { TrackResponse } from './trackResponse';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('track')
 export class TrackController {
@@ -58,8 +59,8 @@ export class TrackController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Track with this id does not exist' })
-  getTrackById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const track = this.trackService.getTrackById(id);
+  async getTrackById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const track = await this.trackService.getTrackById(id);
     if (!track) {
       throw new HttpException(
         'Track with this id does not exist',
@@ -82,7 +83,7 @@ export class TrackController {
     description: ' Bad request. Body does not contain required fields',
   })
   @UsePipes(new ValidationPipe())
-  createTrack(@Body() createTrackDto: CreateTrackDto): Track {
+  createTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
     return this.trackService.createTrack(createTrackDto);
   }
 
@@ -99,13 +100,18 @@ export class TrackController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Track with this id does not exist' })
-  deleteTrackById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.trackService.deleteTrackById(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Track with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteTrackById(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const track = await this.trackService.deleteTrackById(id);
+      return track;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Track with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
   }
 
@@ -123,20 +129,21 @@ export class TrackController {
   })
   @ApiNotFoundResponse({ description: 'Track with this id does not exist' })
   @UsePipes(new ValidationPipe())
-  updateTrack(
+  async updateTrack(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    const { index, updatedTrack } = this.trackService.updateTrack(
-      id,
-      updateTrackDto,
-    );
-    if (index === -1) {
-      throw new HttpException(
-        'Track with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+    try {
+      const track = await this.trackService.updateTrack(id, updateTrackDto);
+      return track;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Track with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
-    return updatedTrack;
   }
 }
