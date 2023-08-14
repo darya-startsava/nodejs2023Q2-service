@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import User from 'src/types/user';
 import { CreateUser, UpdatePassword } from 'src/utils/types';
 import { UserResponse } from './userResponse';
 
