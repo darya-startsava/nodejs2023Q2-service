@@ -1,58 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import Album from 'src/types/album';
 import { CreateAlbum, UpdateAlbum } from 'src/utils/types';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class AlbumService {
   albums: Album[] = [];
+  constructor(private prisma: PrismaService) {}
 
   getAlbums() {
-    return this.albums;
+    return this.prisma.album.findMany();
   }
 
   getAlbumById(id: string) {
-    return this.albums.find((album) => album.id === id);
+    return this.prisma.album.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 
   createAlbum(createAlbumDto: CreateAlbum) {
-    const newAlbum = {
-      ...createAlbumDto,
-      id: uuidv4(),
-      artistId: createAlbumDto.artistId ? createAlbumDto.artistId : null,
-    };
-    this.albums.push(newAlbum);
-    return newAlbum;
+    return this.prisma.album.create({ data: createAlbumDto });
   }
 
   deleteAlbumById(id: string) {
-    const index = this.albums.findIndex((album) => album.id === id);
-    if (index !== -1) {
-      this.albums.splice(index, 1);
-    }
-    return index;
+    return this.prisma.album.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   updateAlbum(id: string, updateAlbumDto: UpdateAlbum) {
-    const index = this.albums.findIndex((album) => album.id === id);
-    if (index === -1) {
-      return { index, updatedAlbum: null };
-    }
-    const album = this.albums[index];
-    const updatedAlbum = {
-      id: album.id,
-      ...updateAlbumDto,
-      artistId: updateAlbumDto.artistId ? updateAlbumDto.artistId : null,
-    };
-    this.albums[index] = updatedAlbum;
-    return { index, updatedAlbum };
-  }
-
-  updateArtistId(id: string) {
-    this.albums.forEach((album) => {
-      if (album.artistId === id) {
-        album.artistId = null;
-      }
+    return this.prisma.album.update({
+      where: {
+        id,
+      },
+      data: updateAlbumDto,
     });
   }
+
+  // TODO update this method to db
+  // updateArtistId(id: string) {
+  //   this.albums.forEach((album) => {
+  //     if (album.artistId === id) {
+  //       album.artistId = null;
+  //     }
+  //   });
+  // }
 }

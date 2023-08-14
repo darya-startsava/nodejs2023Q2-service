@@ -28,6 +28,7 @@ import {
   ApiNoContentResponse,
 } from '@nestjs/swagger';
 import { AlbumResponse } from './albumResponse';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Controller('album')
 export class AlbumController {
@@ -63,8 +64,8 @@ export class AlbumController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Album with this id does not exist' })
-  getAlbumById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const album = this.albumService.getAlbumById(id);
+  async getAlbumById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const album = await this.albumService.getAlbumById(id);
     if (!album) {
       throw new HttpException(
         'Album with this id does not exist',
@@ -87,7 +88,7 @@ export class AlbumController {
     description: ' Bad request. Body does not contain required fields',
   })
   @UsePipes(new ValidationPipe())
-  createAlbum(@Body() createAlbumDto: CreateAlbumDto): Album {
+  createAlbum(@Body() createAlbumDto: CreateAlbumDto): Promise<Album> {
     return this.albumService.createAlbum(createAlbumDto);
   }
 
@@ -104,16 +105,21 @@ export class AlbumController {
     description: 'Bad request. Id is invalid (not uuid)',
   })
   @ApiNotFoundResponse({ description: 'Album with this id does not exist' })
-  deleteAlbumById(@Param('id', new ParseUUIDPipe()) id: string) {
-    const index = this.albumService.deleteAlbumById(id);
-    if (index === -1) {
-      throw new HttpException(
-        'Album with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+  async deleteAlbumById(@Param('id', new ParseUUIDPipe()) id: string) {
+    try {
+      const album = await this.albumService.deleteAlbumById(id);
+      return album;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Album with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
-    this.trackService.updateAlbumId(id);
   }
+
   /**
    * Update album by id
    */
@@ -128,20 +134,21 @@ export class AlbumController {
   })
   @ApiNotFoundResponse({ description: 'Album with this id does not exist' })
   @UsePipes(new ValidationPipe())
-  updateAlbum(
+  async updateAlbum(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    const { index, updatedAlbum } = this.albumService.updateAlbum(
-      id,
-      updateAlbumDto,
-    );
-    if (index === -1) {
-      throw new HttpException(
-        'Album with this id does not exist',
-        StatusCodes.NOT_FOUND,
-      );
+    try {
+      const album = await this.albumService.updateAlbum(id, updateAlbumDto);
+      return album;
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+        throw new HttpException(
+          'Album with this id does not exist',
+          StatusCodes.NOT_FOUND,
+        );
+      }
+      throw e;
     }
-    return updatedAlbum;
   }
 }
