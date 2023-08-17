@@ -3,7 +3,8 @@ import * as clc from 'cli-color';
 import 'dotenv/config';
 
 export enum LogLevel {
-  info = 1,
+  debug = 0,
+  log = 1,
   warn = 2,
   error = 3,
 }
@@ -16,11 +17,11 @@ export class LoggingService {
 
   constructor() {
     this.name = 'Custom Logger';
-    this.logLevel = Number.parseInt(process.env.LOG_LEVEL) || LogLevel.info;
+    this.logLevel = Number.parseInt(process.env.LOG_LEVEL) || LogLevel.log;
     this.rotationSize = Number.parseInt(process.env.LOG_ROTATION_SIZE) || 10; // in KB
   }
 
-  private log(message: string, logLevel: LogLevel) {
+  private send(message: string, logLevel: LogLevel) {
     let colorize = clc.green;
     if (logLevel === LogLevel.warn) {
       colorize = clc.yellow;
@@ -39,21 +40,21 @@ export class LoggingService {
     );
   }
 
-  info(message: string) {
-    if (this.logLevel <= LogLevel.info) {
-      this.log(message, LogLevel.info);
+  log(message: string) {
+    if (this.logLevel <= LogLevel.log) {
+      this.send(message, LogLevel.log);
     }
   }
 
   warn(message: string) {
     if (this.logLevel <= LogLevel.warn) {
-      this.log(message, LogLevel.warn);
+      this.send(message, LogLevel.warn);
     }
   }
 
   error(message: string) {
     if (this.logLevel <= LogLevel.error) {
-      this.log(message, LogLevel.error);
+      this.send(message, LogLevel.error);
     }
   }
 }
