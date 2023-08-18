@@ -11,9 +11,11 @@ import { TrackModule } from './track/track.module';
 import { FavsModule } from './favs/favs.module';
 import { LoggingModule } from './logging/logging.module';
 import { LoggerMiddleware } from './logging/logger.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     ArtistModule,
     AlbumModule,
