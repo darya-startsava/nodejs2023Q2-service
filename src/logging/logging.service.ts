@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as clc from 'cli-color';
 import 'dotenv/config';
+import { writeFile, mkdir, access, stat, rename } from 'node:fs/promises';
 
 export enum LogLevel {
   debug = 0,
@@ -14,14 +15,16 @@ export class LoggingService {
   private name: string;
   private logLevel: LogLevel;
   private rotationSize: number;
+  private counterLogFiles: number;
 
   constructor() {
     this.name = 'Custom Logger';
     this.logLevel = Number.parseInt(process.env.LOG_LEVEL) || LogLevel.log;
     this.rotationSize = Number.parseInt(process.env.LOG_ROTATION_SIZE) || 10; // in KB
+    this.counterLogFiles = 1;
   }
 
-  private send(message: string, logLevel: LogLevel) {
+  private async send(message: string, logLevel: LogLevel) {
     let colorize = clc.green;
     if (logLevel === LogLevel.warn) {
       colorize = clc.yellow;
@@ -30,31 +33,45 @@ export class LoggingService {
       colorize = clc.red;
     }
     const date = new Date();
-    console.log(
-      `[${this.name}] - ${date.toLocaleDateString(
-        'en-US',
-      )} ${date.toLocaleTimeString('en-US')} - ${message
-        .split('\n')
-        .map((val) => colorize(val))
-        .join('\n')}`,
-    );
+    const output = `[${this.name}] - ${date.toLocaleDateString(
+      'en-US',
+    )} ${date.toLocaleTimeString('en-US')} - ${message
+      .split('\n')
+      .map((val) => colorize(val))
+      .join('\n')}`;
+    console.log(output);
+    await this.writeToFile(clc.strip(output) + '\n', date);
   }
 
-  log(message: string) {
+  private async writeToFile(message: string, date: Date) {
+    try {
+      await access('./logs');
+    } catch (e) {
+      await mkdir('./logs');
+    }
+    await writeFile('./logs/logs.txt', message, { flag: 'a' });
+    const stats = await stat('./logs/logs.txt');
+    const size = stats.size;
+    if (size >= this.rotationSize * 1024) {
+      await rename('./logs/logs.txt', `./logs/logs_${date.valueOf()}.txt`);
+    }
+  }
+
+  async log(message: string) {
     if (this.logLevel <= LogLevel.log) {
-      this.send(message, LogLevel.log);
+      await this.send(message, LogLevel.log);
     }
   }
 
-  warn(message: string) {
+  async warn(message: string) {
     if (this.logLevel <= LogLevel.warn) {
-      this.send(message, LogLevel.warn);
+      await this.send(message, LogLevel.warn);
     }
   }
 
-  error(message: string) {
+  async error(message: string) {
     if (this.logLevel <= LogLevel.error) {
-      this.send(message, LogLevel.error);
+      await this.send(message, LogLevel.error);
     }
   }
 }

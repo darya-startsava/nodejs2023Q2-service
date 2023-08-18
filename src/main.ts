@@ -25,12 +25,12 @@ async function bootstrap() {
 
 const logger = new LoggingService();
 
-process.on('uncaughtException', (err, origin) => {
-  logger.error(`Caught exception: ${err}, Exception origin: ${origin}`);
+process.on('uncaughtException', async (err, origin) => {
+  await logger.error(`Caught exception: ${err}, Exception origin: ${origin}`);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error(`Unhandled rejection at: ${promise}, reason: ${reason}`);
+process.on('unhandledRejection', async (reason, promise) => {
+  await logger.error(`Unhandled rejection at: ${promise}, reason: ${reason}`);
 });
 
 bootstrap();
