@@ -7,6 +7,7 @@ import {
   Delete,
   HttpException,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { FavsService } from './favs.service';
@@ -21,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { FavoritesResponse } from './favsResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('favs')
 export class FavsController {
@@ -29,6 +31,7 @@ export class FavsController {
   /**
    * Get all favorites tracks, artists, albums
    */
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all favorites' })
   @ApiOkResponse({
@@ -42,6 +45,7 @@ export class FavsController {
   /**
    * Add track to favorites by track id
    */
+  @UseGuards(AuthGuard)
   @Post('track/:id')
   @ApiOperation({ summary: 'Add track to favorites' })
   @ApiCreatedResponse({
@@ -71,6 +75,7 @@ export class FavsController {
   /**
    * Delete track from favorites by track id
    */
+  @UseGuards(AuthGuard)
   @Delete('track/:id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete track from favorites' })
@@ -99,6 +104,7 @@ export class FavsController {
   /**
    * Add album to favorites by album id
    */
+  @UseGuards(AuthGuard)
   @Post('album/:id')
   @ApiOperation({ summary: 'Add album to favorites' })
   @ApiCreatedResponse({
@@ -128,6 +134,7 @@ export class FavsController {
   /**
    * Delete album from favorites by album id
    */
+  @UseGuards(AuthGuard)
   @Delete('album/:id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete album from favorites' })
@@ -156,6 +163,7 @@ export class FavsController {
   /**
    * Add artist to favorites by artist id
    */
+  @UseGuards(AuthGuard)
   @Post('artist/:id')
   @ApiOperation({ summary: 'Add artist to favorites' })
   @ApiCreatedResponse({
@@ -185,6 +193,7 @@ export class FavsController {
   /**
    * Delete artist from favorites by artist id
    */
+  @UseGuards(AuthGuard)
   @Delete('artist/:id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete artist from favorites' })

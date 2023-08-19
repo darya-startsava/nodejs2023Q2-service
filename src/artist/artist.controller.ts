@@ -11,6 +11,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { CreateArtistDto } from 'src/artist/dtos/createArtistDto.dto';
@@ -27,6 +28,7 @@ import {
 } from '@nestjs/swagger';
 import { ArtistResponse } from './artistResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('artist')
 export class ArtistController {
@@ -35,6 +37,7 @@ export class ArtistController {
   /**
    * Get all artists
    */
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all artists' })
   @ApiOkResponse({
@@ -49,6 +52,7 @@ export class ArtistController {
   /**
    * Get artist by id
    */
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get artist' })
   @ApiOkResponse({
@@ -73,6 +77,7 @@ export class ArtistController {
   /**
    * Create new artist
    */
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create artist' })
   @ApiCreatedResponse({
@@ -90,6 +95,7 @@ export class ArtistController {
   /**
    * Delete artist by id
    */
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete artist' })
@@ -118,6 +124,7 @@ export class ArtistController {
   /**
    * Update artist by id
    */
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update artist' })
   @ApiOkResponse({
