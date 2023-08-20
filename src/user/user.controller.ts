@@ -147,10 +147,7 @@ export class UserController {
   ) {
     try {
       const user = await this.userService.updatePassword(id, updatePasswordDto);
-
-      return user;
-    } catch (e) {
-      if (e instanceof PrismaClientKnownRequestError) {
+      if (!user) {
         const user = await this.userService.getUserById(id);
         if (!user) {
           throw new HttpException(
@@ -160,6 +157,8 @@ export class UserController {
         }
         throw new HttpException('Wrong old password', StatusCodes.FORBIDDEN);
       }
+      return user;
+    } catch (e) {
       throw e;
     }
   }

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { isPasswordCorrect } from 'src/utils/hash';
 import { CreateUser } from 'src/utils/types';
 import { UserService } from '../user/user.service';
 
@@ -12,7 +13,7 @@ export class AuthService {
 
   async login(login: string, password: string): Promise<any> {
     const user = await this.userService.getUserByLogin(login);
-    if (user?.password !== password) {
+    if (!(await isPasswordCorrect(password, user?.password))) {
       throw new UnauthorizedException();
     }
     const payload = { sub: user.id, username: user.login };

@@ -6,6 +6,8 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -16,6 +18,7 @@ import { CreateUserDto } from 'src/user/dtos/createUser.dto';
 import { UserResponse } from 'src/user/userResponse';
 import { AuthService } from './auth.service';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
