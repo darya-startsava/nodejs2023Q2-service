@@ -15,13 +15,11 @@ export class LoggingService {
   private name: string;
   private logLevel: LogLevel;
   private rotationSize: number;
-  private counterLogFiles: number;
 
   constructor() {
     this.name = 'Custom Logger';
     this.logLevel = Number.parseInt(process.env.LOG_LEVEL) || LogLevel.log;
     this.rotationSize = Number.parseInt(process.env.LOG_ROTATION_SIZE) || 10; // in KB
-    this.counterLogFiles = 1;
   }
 
   private async send(message: string, logLevel: LogLevel) {
@@ -40,7 +38,10 @@ export class LoggingService {
       .map((val) => colorize(val))
       .join('\n')}`;
     console.log(output);
-    await this.writeToFile(clc.strip(output) + '\n', date);
+    this.writeToFile(clc.strip(output) + '\n', date);
+    if (logLevel === LogLevel.error) {
+      this.writeToErrorFile(clc.strip(output) + '\n', date);
+    }
   }
 
   private async writeToFile(message: string, date: Date) {
@@ -53,7 +54,28 @@ export class LoggingService {
     const stats = await stat('./logs/logs.txt');
     const size = stats.size;
     if (size >= this.rotationSize * 1024) {
-      await rename('./logs/logs.txt', `./logs/logs_${date.valueOf()}.txt`);
+      try {
+        await rename('./logs/logs.txt', `./logs/logs_${date.valueOf()}.txt`);
+      } catch {}
+    }
+  }
+
+  private async writeToErrorFile(message: string, date: Date) {
+    try {
+      await access('./logs');
+    } catch (e) {
+      await mkdir('./logs');
+    }
+    await writeFile('./logs/errors.txt', message, { flag: 'a' });
+    const stats = await stat('./logs/errors.txt');
+    const size = stats.size;
+    if (size >= this.rotationSize * 1024) {
+      try {
+        await rename(
+          './logs/errors.txt',
+          `./logs/errors_${date.valueOf()}.txt`,
+        );
+      } catch {}
     }
   }
 

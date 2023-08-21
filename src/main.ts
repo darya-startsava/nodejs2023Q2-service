@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { LoggingService } from './logging/logging.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'dotenv/config';
+import { HttpExceptionFilter } from './utils/http-exception.filter';
 
 async function bootstrap() {
   // uncomment to check uncaughtException handler
@@ -12,6 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     abortOnError: false,
   });
+  app.useGlobalFilters(new HttpExceptionFilter());
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
     .setDescription('Home Library Service API description')
