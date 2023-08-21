@@ -1,3 +1,6 @@
+import 'dotenv/config';
+
 export const jwtConstants = {
-  secret: 'super secret',
+  secret: process.env.JWT_SECRET_KEY,
+  expireTime: process.env.TOKEN_EXPIRE_TIME,
 };

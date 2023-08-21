@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import Album from 'src/types/album';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dtos/createAlbumDto.dto';

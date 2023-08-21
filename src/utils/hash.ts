@@ -1,8 +1,10 @@
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
 
+const cryptSalt = Number.parseInt(process.env.CRYPT_SALT);
+
 export function getHashPassword(password: string) {
-  const saltRounds = 10;
+  const saltRounds = cryptSalt;
   return bcrypt.hash(password, saltRounds);
 }
 

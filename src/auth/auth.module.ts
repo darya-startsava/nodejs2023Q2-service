@@ -5,15 +5,16 @@ import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from './auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { jwtConstants } from './constants';
+import 'dotenv/config';
 
 @Module({
   imports: [
     UserModule,
     {
       ...JwtModule.register({
-        secret: 'super secret',
-        // TODO change expiresIn
-        signOptions: { expiresIn: '12000s' },
+        secret: jwtConstants.secret,
+        signOptions: { expiresIn: jwtConstants.expireTime },
       }),
       global: true,
     },

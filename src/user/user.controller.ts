@@ -31,7 +31,6 @@ import {
 } from '@nestjs/swagger';
 import { UserResponse } from './userResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor)

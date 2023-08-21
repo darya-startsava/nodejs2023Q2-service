@@ -28,7 +28,6 @@ import {
 } from '@nestjs/swagger';
 import { ArtistResponse } from './artistResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiBearerAuth()
 @Controller('artist')
