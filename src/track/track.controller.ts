@@ -11,7 +11,6 @@ import {
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
-  UseGuards,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import Track from 'src/types/track';
@@ -39,7 +38,6 @@ export class TrackController {
   /**
    * Get all tracks
    */
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all tracks' })
   @ApiOkResponse({
@@ -54,7 +52,6 @@ export class TrackController {
   /**
    * Get track by id
    */
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get track' })
   @ApiOkResponse({
@@ -79,7 +76,6 @@ export class TrackController {
   /**
    * Create new track
    */
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create track' })
   @ApiCreatedResponse({
@@ -97,7 +93,6 @@ export class TrackController {
   /**
    * Delete track by id
    */
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete track' })
@@ -126,7 +121,6 @@ export class TrackController {
   /**
    * Update track by id
    */
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update track' })
   @ApiOkResponse({

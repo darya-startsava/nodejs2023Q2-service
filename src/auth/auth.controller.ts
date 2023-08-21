@@ -17,18 +17,21 @@ import {
 import { CreateUserDto } from 'src/user/dtos/createUser.dto';
 import { UserResponse } from 'src/user/userResponse';
 import { AuthService } from './auth.service';
+import { Public } from './public.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   login(@Body() loginDto: CreateUserDto) {
     return this.authService.login(loginDto.login, loginDto.password);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
   @ApiOperation({ summary: 'Create user' })

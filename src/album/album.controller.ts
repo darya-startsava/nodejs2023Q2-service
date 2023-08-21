@@ -11,7 +11,6 @@ import {
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
-  UseGuards,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import Album from 'src/types/album';
@@ -40,7 +39,6 @@ export class AlbumController {
   /**
    * Get all albums
    */
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all albums' })
   @ApiOkResponse({
@@ -55,7 +53,6 @@ export class AlbumController {
   /**
    * Get album by id
    */
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get album' })
   @ApiOkResponse({
@@ -80,7 +77,6 @@ export class AlbumController {
   /**
    * Create new album
    */
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create album' })
   @ApiCreatedResponse({
@@ -98,7 +94,6 @@ export class AlbumController {
   /**
    * Delete album by id
    */
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete album' })
@@ -127,7 +122,6 @@ export class AlbumController {
   /**
    * Update album by id
    */
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update album' })
   @ApiOkResponse({

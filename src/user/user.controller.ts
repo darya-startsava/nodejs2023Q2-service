@@ -13,7 +13,6 @@ import {
   ParseUUIDPipe,
   ClassSerializerInterceptor,
   UseInterceptors,
-  UseGuards,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 
@@ -43,7 +42,7 @@ export class UserController {
   /**
    * Get all users
    */
-  @UseGuards(AuthGuard)
+
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({
@@ -58,7 +57,6 @@ export class UserController {
   /**
    * Get user by id
    */
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get user' })
   @ApiOkResponse({
@@ -83,7 +81,6 @@ export class UserController {
   /**
    * Create new user
    */
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiCreatedResponse({
@@ -101,7 +98,6 @@ export class UserController {
   /**
    * Delete user by id
    */
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete user' })
@@ -130,7 +126,6 @@ export class UserController {
   /**
    * Update user by id
    */
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update user' })
   @ApiOkResponse({
