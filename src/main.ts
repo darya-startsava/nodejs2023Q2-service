@@ -16,6 +16,7 @@ async function bootstrap() {
     .setTitle('Home Library Service')
     .setDescription('Home Library Service API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

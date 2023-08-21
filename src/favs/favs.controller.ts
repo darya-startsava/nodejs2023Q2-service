@@ -19,11 +19,13 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiUnprocessableEntityResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { FavoritesResponse } from './favsResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AuthGuard } from 'src/auth/auth.guard';
 
+@ApiBearerAuth()
 @Controller('favs')
 export class FavsController {
   constructor(private favsService: FavsService) {}

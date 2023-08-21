@@ -27,10 +27,12 @@ import {
   ApiNotFoundResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AlbumResponse } from './albumResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
+@ApiBearerAuth()
 @Controller('album')
 export class AlbumController {
   constructor(private albumService: AlbumService) {}
