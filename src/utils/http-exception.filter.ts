@@ -4,12 +4,11 @@ import {
   ArgumentsHost,
   HttpException,
 } from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { LoggingService } from 'src/logging/logging.service';
 
 @Catch(HttpException)
-export class HttpExceptionFilter extends BaseExceptionFilter {
+export class HttpExceptionFilter implements ExceptionFilter {
   private logger = new LoggingService();
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
