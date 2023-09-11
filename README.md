@@ -1,5 +1,3 @@
-## part_3 branch
-
 # Home Library Service
 
 ## Prerequisites
