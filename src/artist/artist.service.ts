@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import Artist from 'src/types/artist';
 import { CreateArtist, UpdateArtist } from 'src/utils/types';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ArtistService {
   artists: Artist[] = [];
+  constructor(private prisma: PrismaService) {}
 
   getArtists() {
-    return this.artists;
+    return this.prisma.artist.findMany();
   }
 
   getArtistById(id: string) {
-    return this.artists.find((artist) => artist.id === id);
+    return this.prisma.artist.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 
   createArtist(createArtistDto: CreateArtist) {
-    const newArtist = { ...createArtistDto, id: uuidv4() };
-    this.artists.push(newArtist);
-    return newArtist;
+    return this.prisma.artist.create({ data: createArtistDto });
   }
 
-  deleteArtistById(id: string) {
-    const index = this.artists.findIndex((artist) => artist.id === id);
-    if (index !== -1) {
-      this.artists.splice(index, 1);
-    }
-    return index;
+  async deleteArtistById(id: string) {
+    return await this.prisma.artist.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   updateArtist(id: string, updateArtistDto: UpdateArtist) {
-    const index = this.artists.findIndex((album) => album.id === id);
-    if (index === -1) {
-      return { index, artist: null, updatedArtist: null };
-    }
-    const artist = this.artists[index];
-    const updatedArtist = {
-      id: artist.id,
-      ...updateArtistDto,
-    };
-    this.artists[index] = updatedArtist;
-    return { index, updatedArtist };
+    return this.prisma.artist.update({
+      where: {
+        id,
+      },
+      data: updateArtistDto,
+    });
   }
 }

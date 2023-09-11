@@ -1,4 +1,4 @@
-part_1 branch
+## part_3 branch
 
 # Home Library Service
 
@@ -19,31 +19,29 @@ git clone {repository URL}
 npm install
 ```
 
+## Creating .env file
+
+Create .env from .env.example
+
+## Vulnerabilities scanning 
+
+```
+npm run docker:scan
+```
+
 ## Running application
 
 ```
-npm start
+docker compose up
 ```
 
 After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+in your browser OpenAPI documentation by typing http://localhost:4000/api.
 
 ## Testing
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
 
 To run all test with authorization
 
@@ -67,15 +65,29 @@ npm run lint
 npm run format
 ```
 
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
-
 ## REST service docs
 
 ## Endpoints:
+
+### Authentication and Authorization(/auth route)
+
+- `POST auth/signup` - create new user with fields:
+
+```
+    {
+      login: string;
+      password: string;
+    }
+```
+
+- `POST auth/login` - to get Access token:
+
+```
+    {
+      login: string;
+      password: string;
+    }
+```
 
 ### Users (/user route)
 

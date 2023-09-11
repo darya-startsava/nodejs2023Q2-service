@@ -1,93 +1,92 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { AlbumService } from 'src/album/album.service';
-import { ArtistService } from 'src/artist/artist.service';
-import { TrackService } from 'src/track/track.service';
+import { Injectable } from '@nestjs/common';
 import Favorites from 'src/types/favs';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class FavsService {
-  @Inject(ArtistService)
-  private readonly artistService: ArtistService;
-  @Inject(AlbumService)
-  private readonly albumService: AlbumService;
-  @Inject(TrackService)
-  private readonly trackService: TrackService;
   favs: Favorites = { artists: [], albums: [], tracks: [] };
+  constructor(private prisma: PrismaService) {}
 
-  getFavs() {
-    const artistsFullData = [];
-    this.favs.artists.forEach((item) => {
-      const artist = this.artistService.artists.find((i) => i.id === item);
-      if (artist) {
-        artistsFullData.push(artist);
-      }
+  async getFavs() {
+    const favArtistsRecords = await this.prisma.favArtist.findMany({
+      include: {
+        artist: true,
+      },
     });
-    const albumsFullData = [];
-    this.favs.albums.forEach((item) => {
-      const album = this.albumService.albums.find((i) => i.id === item);
-      if (album) {
-        albumsFullData.push(album);
-      }
+    const favArtists = favArtistsRecords.map((r) => r.artist);
+
+    const favAlbumsRecords = await this.prisma.favAlbum.findMany({
+      include: {
+        album: true,
+      },
     });
-    const tracksFullData = [];
-    this.favs.tracks.forEach((item) => {
-      const track = this.trackService.tracks.find((i) => i.id === item);
-      if (track) {
-        tracksFullData.push(track);
-      }
+    const favAlbums = favAlbumsRecords.map((r) => r.album);
+
+    const favTracksRecords = await this.prisma.favTrack.findMany({
+      include: {
+        track: true,
+      },
     });
+    const favTracks = favTracksRecords.map((r) => r.track);
+
     return {
-      artists: artistsFullData,
-      albums: albumsFullData,
-      tracks: tracksFullData,
+      artists: favArtists,
+      albums: favAlbums,
+      tracks: favTracks,
     };
   }
 
-  addTrackToFavs(id: string) {
-    const track = this.trackService.tracks.find((i) => i.id === id);
-    if (track) {
-      this.favs.tracks.push(id);
-    }
+  async addTrackToFavs(id: string) {
+    const track = await this.prisma.favTrack.create({
+      data: {
+        trackId: id,
+      },
+    });
+
     return track;
   }
 
-  deleteTrackFromFavs(id: string) {
-    const index = this.favs.tracks.findIndex((i) => i === id);
-    if (index !== -1) {
-      this.favs.tracks.splice(index, 1);
-    }
-    return index;
+  async deleteTrackFromFavs(id: string) {
+    return await this.prisma.favTrack.delete({
+      where: {
+        trackId: id,
+      },
+    });
   }
 
-  addAlbumToFavs(id: string) {
-    const album = this.albumService.albums.find((i) => i.id === id);
-    if (album) {
-      this.favs.albums.push(id);
-    }
+  async addAlbumToFavs(id: string) {
+    const album = await this.prisma.favAlbum.create({
+      data: {
+        albumId: id,
+      },
+    });
+
     return album;
   }
 
-  deleteAlbumFromFavs(id: string) {
-    const index = this.favs.albums.findIndex((i) => i === id);
-    if (index !== -1) {
-      this.favs.albums.splice(index, 1);
-    }
-    return index;
+  async deleteAlbumFromFavs(id: string) {
+    return await this.prisma.favAlbum.delete({
+      where: {
+        albumId: id,
+      },
+    });
   }
 
-  addArtistToFavs(id: string) {
-    const artist = this.artistService.artists.find((i) => i.id === id);
-    if (artist) {
-      this.favs.artists.push(id);
-    }
+  async addArtistToFavs(id: string) {
+    const artist = await this.prisma.favArtist.create({
+      data: {
+        artistId: id,
+      },
+    });
+
     return artist;
   }
 
-  deleteArtistFromFavs(id: string) {
-    const index = this.favs.artists.findIndex((i) => i === id);
-    if (index !== -1) {
-      this.favs.artists.splice(index, 1);
-    }
-    return index;
+  async deleteArtistFromFavs(id: string) {
+    return await this.prisma.favArtist.delete({
+      where: {
+        artistId: id,
+      },
+    });
   }
 }
