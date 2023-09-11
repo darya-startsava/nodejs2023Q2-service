@@ -1,4 +1,4 @@
-## part_2 branch
+## part_3 branch
 
 # Home Library Service
 
@@ -42,17 +42,6 @@ in your browser OpenAPI documentation by typing http://localhost:4000/api.
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
-
-```
-npm run test
-```
-
-To run only one of all test suites
-
-```
-npm run test -- <path to suite>
-```
 
 To run all test with authorization
 
@@ -79,6 +68,26 @@ npm run format
 ## REST service docs
 
 ## Endpoints:
+
+### Authentication and Authorization(/auth route)
+
+- `POST auth/signup` - create new user with fields:
+
+```
+    {
+      login: string;
+      password: string;
+    }
+```
+
+- `POST auth/login` - to get Access token:
+
+```
+    {
+      login: string;
+      password: string;
+    }
+```
 
 ### Users (/user route)
 

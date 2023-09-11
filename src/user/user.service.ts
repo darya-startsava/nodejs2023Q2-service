@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
+import { getHashPassword, isPasswordCorrect } from 'src/utils/hash';
 import { CreateUser, UpdatePassword } from 'src/utils/types';
 import { UserResponse } from './userResponse';
 
@@ -20,10 +21,19 @@ export class UserService {
     return null;
   }
 
+  async getUserByLogin(login: string) {
+    const user = await this.prisma.user.findFirst({ where: { login } });
+    if (user) {
+      return user;
+    }
+    return null;
+  }
+
   async createUser(createUserDto: CreateUser) {
+    const hashPassword = await getHashPassword(createUserDto.password);
     const user = await this.prisma.user.create({
       data: {
-        ...createUserDto,
+        ...{ ...createUserDto, password: hashPassword },
         version: 1,
       },
     });
@@ -40,16 +50,23 @@ export class UserService {
   }
 
   async updatePassword(id: string, updatePasswordDto: UpdatePassword) {
-    const user = await this.prisma.user.update({
-      where: { id, password: updatePasswordDto.oldPassword },
-      data: {
-        password: updatePasswordDto.newPassword,
-        version: {
-          increment: 1,
+    const user = await this.prisma.user.findFirst({ where: { id } });
+    if (!user) {
+      return null;
+    }
+    if (await isPasswordCorrect(updatePasswordDto.oldPassword, user.password)) {
+      const newPassword = await getHashPassword(updatePasswordDto.newPassword);
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: {
+          password: newPassword,
+          version: {
+            increment: 1,
+          },
         },
-      },
-    });
-
-    return new UserResponse(user);
+      });
+      return new UserResponse(updatedUser);
+    }
+    return null;
   }
 }

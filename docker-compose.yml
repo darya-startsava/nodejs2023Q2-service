@@ -5,6 +5,14 @@ services:
     restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - CRYPT_SALT=${CRYPT_SALT}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_SECRET_REFRESH_KEY=${JWT_SECRET_REFRESH_KEY}
+      - TOKEN_EXPIRE_TIME=${TOKEN_EXPIRE_TIME}
+      - TOKEN_REFRESH_EXPIRE_TIME=${TOKEN_REFRESH_EXPIRE_TIME}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_ROTATION_SIZE=${LOG_ROTATION_SIZE}
     ports:
       - ${PORT}:${PORT}
     depends_on:

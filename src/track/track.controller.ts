@@ -24,10 +24,12 @@ import {
   ApiNotFoundResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { TrackResponse } from './trackResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
+@ApiBearerAuth()
 @Controller('track')
 export class TrackController {
   constructor(private trackService: TrackService) {}

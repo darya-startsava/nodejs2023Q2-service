@@ -24,10 +24,12 @@ import {
   ApiNotFoundResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ArtistResponse } from './artistResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
+@ApiBearerAuth()
 @Controller('artist')
 export class ArtistController {
   constructor(private artistService: ArtistService) {}
