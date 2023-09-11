@@ -1,5 +1,12 @@
 # Home Library Service
 
+## In this project have been used:
+- Nest.js
+- Prisma
+- PostgreSQL
+- Docker
+- Typescript
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
